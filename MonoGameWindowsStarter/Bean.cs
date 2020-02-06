@@ -28,7 +28,7 @@ namespace MonoGameWindowsStarter
 
       public void LoadContent(ContentManager content)
       {
-         int myVal = random.Next(1, 9);
+         int myVal = random.Next(1, 10);
          Value = myVal;
          texture = content.Load<Texture2D>("bean" + myVal.ToString());
          bounds.Width = 100;
