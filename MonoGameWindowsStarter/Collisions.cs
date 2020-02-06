@@ -10,10 +10,11 @@ namespace MonoGameWindowsStarter
     {
         public static bool CollidesWith(this BoundingRectangle a, BoundingRectangle b)
         {
-            return !(a.X > a.X + b.Width
-                  || a.X + a.Width < b.X
-                  || a.Y > b.Y + b.Height
-                  || a.Y + a.Height < b.Y);
+            return (a.X < b.X + b.Width
+                  && a.X + a.Width > b.X
+                  && a.Y < b.Y + b.Height
+                  && a.Y + a.Height > b.Y);
         }
+
     }
 }

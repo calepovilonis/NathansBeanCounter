@@ -18,18 +18,23 @@ namespace MonoGameWindowsStarter
       List<Ball> balls = new List<Ball>();
       Texture2D background;
       Texture2D nathanbean;
+      Texture2D speachbubble;
+      Texture2D shadow;
 
-      float timer = (float).75;
-      const float TIMER = (float).75;
+      float timer = (float).85;
+      const float TIMER = (float).85;
 
       Vector2 ballPosition = Vector2.Zero;
       Vector2 ballVelocity;
 
       private SpriteFont font;
+      private SpriteFont score;
       private string x1 = "?";
       private string x2 = "?";
       private string mod;
       private int result;
+
+      int userScore = 100;
 
       Paddle paddle;
 
@@ -44,8 +49,10 @@ namespace MonoGameWindowsStarter
          calculateGoal();
       }
 
-      public void calculateGoal ()
+      public void calculateGoal()
       {
+         x1 = "?";
+         x2 = "?";
          int val1 = random.Next(1, 9);
          int val2 = random.Next(1, 9);
          int whichMod = random.Next(1, 4);
@@ -53,27 +60,45 @@ namespace MonoGameWindowsStarter
          {
             case 1:
                result = val1 + val2;
+               if (random.Next(1, 100) % 2 == 0) x1 = val1.ToString();
+               else x2 = val2.ToString();
                mod = "+";
                break;
             case 2:
                if (val1 > val2)
+               {
                   result = val1 - val2;
-               else result = val2 - val1;
+                  x1 = val1.ToString();
+               }
+               else
+               {
+                  result = val2 - val1;
+                  x2 = val1.ToString();
+               }
                mod = "-";
                break;
             case 3:
-               result = val1 + val2;
+               result = val1 * val2;
+               if (random.Next(1, 100) % 2 == 0) x1 = val1.ToString();
+               else x2 = val2.ToString();
                mod = "*";
                break;
             case 4:
                if (val1 > val2)
+               {
                   result = val1 / val2;
-               else result = val2 / val1;
+                  x2 = val2.ToString();
+               }
+               else
+               {
+                  result = val2 / val1;
+                  x2 = val1.ToString();
+               }
                mod = "%";
                break;
             default: break;
          }
-            
+
       }
 
       /// <summary>
@@ -107,8 +132,11 @@ namespace MonoGameWindowsStarter
          // Create a new SpriteBatch, which can be used to draw textures.
          spriteBatch = new SpriteBatch(GraphicsDevice);
          font = Content.Load<SpriteFont>("Goal");
+         score = Content.Load<SpriteFont>("Score");
 
          background = Content.Load<Texture2D>("background");
+         speachbubble = Content.Load<Texture2D>("speachbubble");
+         shadow = Content.Load<Texture2D>("shadow");
          nathanbean = Content.Load<Texture2D>("nathanbean");
          // TODO: use this.Content to load your game content here
          foreach (Ball ball in balls)
@@ -127,6 +155,20 @@ namespace MonoGameWindowsStarter
          // TODO: Unload any non ContentManager content here
       }
 
+      public void deductScore (int i)
+      {
+         if (balls[i].bounds.Y >= graphics.GraphicsDevice.Viewport.Height - 50) balls[i].Value = 0;
+         if (balls[i].Value == 1)
+         {
+            userScore--;
+            return;
+         } 
+         if (userScore - (balls[i].Value / 2) < 0)
+         {
+            userScore = 0;
+         }
+         else userScore -= (balls[i].Value / 2);
+      }
       /// <summary>
       /// Allows the game to run logic such as updating the world,
       /// checking for collisions, gathering input, and playing audio.
@@ -142,9 +184,172 @@ namespace MonoGameWindowsStarter
          if (newKeyboardState.IsKeyDown(Keys.Escape))
             Exit();
 
+         paddle.Update(gameTime);
+
          for (int i = 0; i < balls.Count; i++)
          {
-            if (balls[i].BoundsY == graphics.GraphicsDevice.Viewport.Height - balls[i].BoundsHeight) balls.Remove(balls[i]);
+            if (paddle.hitbox.CollidesWith(balls[i].bounds))
+            {
+               switch (mod)
+               {
+                  case "%":
+                     if (balls[i].Value / Int32.Parse(x2) == result)
+                     {
+                        userScore += balls[i].Value + Int32.Parse(x2) + result;
+                        calculateGoal();
+                     }
+                     else deductScore(i);
+                     break;
+                  case "-":
+                     if (x1.Equals("?"))
+                     {
+                        if (balls[i].Value - Int32.Parse(x2) == result)
+                        {
+                           userScore += balls[i].Value + Int32.Parse(x2) + result;
+                           calculateGoal();
+                        }
+                        else deductScore(i);
+                     }
+                     else if (!x1.Equals("?"))
+                     {
+                        if (Int32.Parse(x1) - balls[i].Value == result)
+                        {
+                           userScore += balls[i].Value + Int32.Parse(x1) + result;
+                           calculateGoal();
+                        }
+                        else deductScore(i);
+                     }
+
+                     break;
+                  case "*":
+                     if (x1.Equals("?"))
+                     {
+                        if (balls[i].Value * Int32.Parse(x2) == result)
+                        {
+                           userScore += balls[i].Value + Int32.Parse(x2) + result;
+                           calculateGoal();
+                        }
+                        else deductScore(i);
+                     }
+                     else if (!x1.Equals("?"))
+                     {
+                        if (balls[i].Value * Int32.Parse(x1) == result)
+                        {
+                           userScore += balls[i].Value + Int32.Parse(x1) + result;
+                           calculateGoal();
+                        }
+                        else deductScore(i);
+                     }
+                     break;
+                  case "+":
+                     if (x1.Equals("?"))
+                     {
+                        if (balls[i].Value + Int32.Parse(x2) == result)
+                        {
+                           userScore += balls[i].Value + Int32.Parse(x2) + result;
+                           calculateGoal();
+                        }
+                        else deductScore(i);
+                     }
+                     else if (!x1.Equals("?"))
+                     {
+                        if (balls[i].Value + Int32.Parse(x1) == result)
+                        {
+                           userScore += balls[i].Value + Int32.Parse(x1) + result;
+                           calculateGoal();
+                        }
+                        else deductScore(i);
+                     }
+                     break;
+                  default:
+                     break;
+               }
+
+               /*
+               if (mod == "%")
+               {
+                  if (balls[i].Value / Int32.Parse(x2) == result)
+                  {
+                     userScore += balls[i].Value + Int32.Parse(x2) + result;
+                     calculateGoal();
+                  }
+               }
+               if (mod == "-")
+               {
+                  if (x1.Equals("?"))
+                  {
+                     if (balls[i].Value - Int32.Parse(x2) == result)
+                     {
+                        userScore += balls[i].Value + Int32.Parse(x2) + result;
+                        calculateGoal();
+                     }
+                  }
+                  else
+                  {
+                     if (Int32.Parse(x1) - balls[i].Value == result)
+                     {
+                        userScore += balls[i].Value + Int32.Parse(x1) + result;
+                        calculateGoal();
+                     }
+                  }
+               }
+               if (mod == "*")
+               {
+                  if (x1.Equals("?"))
+                  {
+                     if (balls[i].Value * Int32.Parse(x2) == result)
+                     {
+                        userScore += balls[i].Value + Int32.Parse(x2) + result;
+                        calculateGoal();
+                     }
+                  }
+                  else
+                  {
+                     if (balls[i].Value * Int32.Parse(x1) == result)
+                     {
+                        userScore += balls[i].Value + Int32.Parse(x1) + result;
+                        calculateGoal();
+                     }
+                  }
+               }
+               if (mod == "+")
+               {
+                     if (x1.Equals("?"))
+                     {
+                        if (balls[i].Value + Int32.Parse(x2) == result)
+                        {
+                           userScore += balls[i].Value + Int32.Parse(x2) + result;
+                           calculateGoal();
+                        }
+                     }
+                     else
+                     {
+                        if (balls[i].Value + Int32.Parse(x1) == result)
+                        {
+                           userScore += balls[i].Value + Int32.Parse(x1) + result;
+                           calculateGoal();
+                        }
+                     }
+               }
+               else
+               {
+                  if (balls[i].bounds.Y >= graphics.GraphicsDevice.Viewport.Height - 50) balls[i].Value = 0;
+                  if (userScore - (balls[i].Value / 2) < 0)
+                  {
+                     userScore = 0;
+                  }
+                  else userScore -= (balls[i].Value / 2);
+               }
+               */
+
+               balls.Remove(balls[i]);
+            }
+         }
+
+
+         for (int i = 0; i < balls.Count; i++)
+         {
+            if (balls[i].BoundsY == graphics.GraphicsDevice.Viewport.Height) balls.Remove(balls[i]);
          }
 
          float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -162,40 +367,6 @@ namespace MonoGameWindowsStarter
             ball.Update(gameTime);
          }
 
-         paddle.Update(gameTime);
-
-         // TODO: Add your update logic here
-         ballPosition.Y += (float)gameTime.ElapsedGameTime.TotalMilliseconds * ballVelocity.Y;
-
-         // Check for wall collisions
-         if (ballPosition.Y < 0)
-         {
-            ballVelocity.Y *= -1;
-            float delta = 0 - ballPosition.Y;
-            ballPosition.Y += 2 * delta;
-         }
-
-         if (ballPosition.Y > graphics.PreferredBackBufferHeight - 100)
-         {
-            ballVelocity.Y *= -1;
-            float delta = graphics.PreferredBackBufferHeight - 100 - ballPosition.Y;
-            ballPosition.Y += 2 * delta;
-         }
-
-         if (ballPosition.X < 0)
-         {
-            ballVelocity.X *= -1;
-            float delta = 0 - ballPosition.X;
-            ballPosition.X += 2 * delta;
-         }
-
-         if (ballPosition.X > graphics.PreferredBackBufferWidth - 100)
-         {
-            ballVelocity.X *= -1;
-            float delta = graphics.PreferredBackBufferWidth - 100 - ballPosition.X;
-            ballPosition.X += 2 * delta;
-         }
-
          oldKeyboardState = newKeyboardState;
          base.Update(gameTime);
       }
@@ -211,14 +382,17 @@ namespace MonoGameWindowsStarter
          // TODO: Add your drawing code here
          spriteBatch.Begin();
          spriteBatch.Draw(background, new Rectangle(-200, 0, graphics.GraphicsDevice.Viewport.Width + 350, graphics.GraphicsDevice.Viewport.Height), Color.White);
-         spriteBatch.Draw(nathanbean, new Rectangle(graphics.GraphicsDevice.Viewport.Width - 274, graphics.GraphicsDevice.Viewport.Height / 2, 264 , 384), Color.White);
+         spriteBatch.Draw(speachbubble, new Rectangle(graphics.GraphicsDevice.Viewport.Width - 274, graphics.GraphicsDevice.Viewport.Height / 2 - 250, 274, 233), Color.White);
+         spriteBatch.Draw(shadow, new Rectangle(graphics.GraphicsDevice.Viewport.Width - 315, graphics.GraphicsDevice.Viewport.Height / 2 + 350, 274, 172), Color.White);
+         spriteBatch.Draw(nathanbean, new Rectangle(graphics.GraphicsDevice.Viewport.Width - 274, graphics.GraphicsDevice.Viewport.Height / 2, 260, 315), Color.White);
          foreach (Ball ball in balls)
          {
             ball.Draw(spriteBatch);
          }
          paddle.Draw(spriteBatch);
          string goal = x1 + " " + mod.ToString() + " " + x2 + " = " + result.ToString();
-         spriteBatch.DrawString(font, goal, new Vector2(graphics.GraphicsDevice.Viewport.Width - 274, 75), Color.Black);
+         spriteBatch.DrawString(font, goal, new Vector2(graphics.GraphicsDevice.Viewport.Width - 220, graphics.GraphicsDevice.Viewport.Height / 2 - 180), Color.Black);
+         spriteBatch.DrawString(score, "Score: " + userScore, new Vector2(graphics.GraphicsDevice.Viewport.Width - 274, 50), Color.Black);
          spriteBatch.End();
 
 

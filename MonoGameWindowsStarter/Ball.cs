@@ -14,7 +14,7 @@ namespace MonoGameWindowsStarter
     {
       GraphicsDeviceManager graphics;
       Texture2D texture;
-      BoundingRectangle bounds;
+      public BoundingRectangle bounds;
       Random random = new Random();
       int value;
 
@@ -45,7 +45,7 @@ namespace MonoGameWindowsStarter
 
          if (bounds.Y > graphics.GraphicsDevice.Viewport.Height - bounds.Height)
          {
-            bounds.Y = graphics.GraphicsDevice.Viewport.Height - bounds.Height;
+            //bounds.Y = graphics.GraphicsDevice.Viewport.Height - bounds.Height;
          }
       }
 
