@@ -16,12 +16,11 @@ namespace MonoGameWindowsStarter
       Texture2D texture;
       public BoundingRectangle bounds;
       Random random = new Random();
-      int value;
 
       /// <summary>
       /// Creates a paddle
       /// </summary>
-      /// <param name="game">The game this paddle belongs to</param>
+      /// <param name="game">The game this Bean belongs to</param>
       public Bean(GraphicsDeviceManager graphics)
       {
          this.graphics = graphics;
@@ -30,7 +29,7 @@ namespace MonoGameWindowsStarter
       public void LoadContent(ContentManager content)
       {
          int myVal = random.Next(1, 9);
-         value = myVal;
+         Value = myVal;
          texture = content.Load<Texture2D>("bean" + myVal.ToString());
          bounds.Width = 100;
          bounds.Height = 150;
@@ -40,13 +39,7 @@ namespace MonoGameWindowsStarter
 
       public void Update(GameTime gameTime)
       {
-
          bounds.Y += (float)(gameTime.ElapsedGameTime.TotalMilliseconds / 2.5);
-
-         if (bounds.Y > graphics.GraphicsDevice.Viewport.Height - bounds.Height)
-         {
-            //bounds.Y = graphics.GraphicsDevice.Viewport.Height - bounds.Height;
-         }
       }
 
       public void Draw(SpriteBatch spriteBatch)
@@ -58,10 +51,6 @@ namespace MonoGameWindowsStarter
 
       public float BoundsHeight => bounds.Height;
 
-      public int Value
-      {
-         get { return this.value; }
-         set { this.value = value; }
-      }
+      public int Value { get; set; }
    }
 }

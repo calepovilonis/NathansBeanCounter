@@ -20,7 +20,7 @@ namespace MonoGameWindowsStarter
       Texture2D nathanbean;
       Texture2D speachbubble;
       Texture2D shadow;
-      
+
       private SpriteFont font;
       private SpriteFont score;
 
@@ -37,7 +37,6 @@ namespace MonoGameWindowsStarter
       private string mod;
       private int result;
 
-
       KeyboardState oldKeyboardState;
       KeyboardState newKeyboardState;
 
@@ -47,58 +46,6 @@ namespace MonoGameWindowsStarter
          Content.RootDirectory = "Content";
          basket = new Basket(this);
          calculateGoal();
-      }
-
-      public void calculateGoal()
-      {
-         x1 = "?";
-         x2 = "?";
-         int val1 = random.Next(1, 9);
-         int val2 = random.Next(1, 9);
-         int whichMod = random.Next(1, 4);
-         switch (whichMod)
-         {
-            case 1:
-               result = val1 + val2;
-               if (random.Next(1, 100) % 2 == 0) x1 = val1.ToString();
-               else x2 = val2.ToString();
-               mod = "+";
-               break;
-            case 2:
-               if (val1 > val2)
-               {
-                  result = val1 - val2;
-                  x1 = val1.ToString();
-               }
-               else
-               {
-                  result = val2 - val1;
-                  x2 = val1.ToString();
-               }
-               mod = "-";
-               break;
-            case 3:
-               result = val1 * val2;
-               if (random.Next(1, 100) % 2 == 0) x1 = val1.ToString();
-               else x2 = val2.ToString();
-               mod = "*";
-               break;
-            case 4:
-               if (val1 > val2)
-               {
-                  result = val1 / val2;
-                  x2 = val2.ToString();
-               }
-               else
-               {
-                  result = val2 / val1;
-                  x2 = val1.ToString();
-               }
-               mod = "%";
-               break;
-            default: break;
-         }
-
       }
 
       /// <summary>
@@ -149,20 +96,6 @@ namespace MonoGameWindowsStarter
          // TODO: Unload any non ContentManager content here
       }
 
-      public void deductScore (int i)
-      {
-         if (beans[i].bounds.Y >= graphics.GraphicsDevice.Viewport.Height - 50) beans[i].Value = 0;
-         if (beans[i].Value == 1)
-         {
-            userScore--;
-            return;
-         } 
-         if (userScore - (beans[i].Value / 2) < 0)
-         {
-            userScore = 0;
-         }
-         else userScore -= (beans[i].Value / 2);
-      }
       /// <summary>
       /// Allows the game to run logic such as updating the world,
       /// checking for collisions, gathering input, and playing audio.
@@ -259,83 +192,6 @@ namespace MonoGameWindowsStarter
                      break;
                }
 
-               /*
-               if (mod == "%")
-               {
-                  if (balls[i].Value / Int32.Parse(x2) == result)
-                  {
-                     userScore += balls[i].Value + Int32.Parse(x2) + result;
-                     calculateGoal();
-                  }
-               }
-               if (mod == "-")
-               {
-                  if (x1.Equals("?"))
-                  {
-                     if (balls[i].Value - Int32.Parse(x2) == result)
-                     {
-                        userScore += balls[i].Value + Int32.Parse(x2) + result;
-                        calculateGoal();
-                     }
-                  }
-                  else
-                  {
-                     if (Int32.Parse(x1) - balls[i].Value == result)
-                     {
-                        userScore += balls[i].Value + Int32.Parse(x1) + result;
-                        calculateGoal();
-                     }
-                  }
-               }
-               if (mod == "*")
-               {
-                  if (x1.Equals("?"))
-                  {
-                     if (balls[i].Value * Int32.Parse(x2) == result)
-                     {
-                        userScore += balls[i].Value + Int32.Parse(x2) + result;
-                        calculateGoal();
-                     }
-                  }
-                  else
-                  {
-                     if (balls[i].Value * Int32.Parse(x1) == result)
-                     {
-                        userScore += balls[i].Value + Int32.Parse(x1) + result;
-                        calculateGoal();
-                     }
-                  }
-               }
-               if (mod == "+")
-               {
-                     if (x1.Equals("?"))
-                     {
-                        if (balls[i].Value + Int32.Parse(x2) == result)
-                        {
-                           userScore += balls[i].Value + Int32.Parse(x2) + result;
-                           calculateGoal();
-                        }
-                     }
-                     else
-                     {
-                        if (balls[i].Value + Int32.Parse(x1) == result)
-                        {
-                           userScore += balls[i].Value + Int32.Parse(x1) + result;
-                           calculateGoal();
-                        }
-                     }
-               }
-               else
-               {
-                  if (balls[i].bounds.Y >= graphics.GraphicsDevice.Viewport.Height - 50) balls[i].Value = 0;
-                  if (userScore - (balls[i].Value / 2) < 0)
-                  {
-                     userScore = 0;
-                  }
-                  else userScore -= (balls[i].Value / 2);
-               }
-               */
-
                beans.Remove(beans[i]);
             }
          }
@@ -386,11 +242,79 @@ namespace MonoGameWindowsStarter
          basket.Draw(spriteBatch);
          string goal = x1 + " " + mod.ToString() + " " + x2 + " = " + result.ToString();
          spriteBatch.DrawString(font, goal, new Vector2(graphics.GraphicsDevice.Viewport.Width - 220, graphics.GraphicsDevice.Viewport.Height / 2 - 180), Color.Black);
-         spriteBatch.DrawString(score, "Score: " + userScore, new Vector2(graphics.GraphicsDevice.Viewport.Width - 274, 50), Color.Black);
+         spriteBatch.DrawString(score, "Count: " + userScore, new Vector2(graphics.GraphicsDevice.Viewport.Width - 300, 50), Color.Black);
          spriteBatch.End();
 
 
          base.Draw(gameTime);
+      }
+
+      public void calculateGoal()
+      {
+         x1 = "?";
+         x2 = "?";
+         int val1 = random.Next(1, 9);
+         int val2 = random.Next(1, 9);
+         int whichMod = random.Next(1, 4);
+         switch (whichMod)
+         {
+            case 1:
+               result = val1 + val2;
+               if (random.Next(1, 100) % 2 == 0) x1 = val1.ToString();
+               else x2 = val2.ToString();
+               mod = "+";
+               break;
+            case 2:
+               result = val1 * val2;
+               if (random.Next(1, 100) % 2 == 0) x1 = val1.ToString();
+               else x2 = val2.ToString();
+               mod = "*";
+               break;
+            
+            case 3:
+               if (val1 > val2)
+               {
+                  result = val1 / val2;
+                  x2 = val2.ToString();
+               }
+               else
+               {
+                  result = val2 / val1;
+                  x2 = val1.ToString();
+               }
+               mod = "%";
+               break;
+            case 4:
+               if (val1 > val2)
+               {
+                  result = val1 - val2;
+                  x1 = val1.ToString();
+               }
+               else
+               {
+                  result = val2 - val1;
+                  x2 = val1.ToString();
+               }
+               mod = "-";
+               break;
+
+            default: break;
+         }
+      }
+
+      public void deductScore(int i)
+      {
+         if (beans[i].bounds.Y >= graphics.GraphicsDevice.Viewport.Height - 50) beans[i].Value = 0;
+         if (beans[i].Value == 1 && !(userScore == 0))
+         {
+            userScore--;
+            return;
+         }
+         if (userScore - (beans[i].Value / 2) < 0)
+         {
+            userScore = 0;
+         }
+         else userScore -= (beans[i].Value / 2);
       }
    }
 }

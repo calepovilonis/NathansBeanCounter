@@ -22,7 +22,7 @@ namespace MonoGameWindowsStarter
       /// <summary>
       /// Creates a paddle
       /// </summary>
-      /// <param name="game">The game this paddle belongs to</param>
+      /// <param name="game">The game this basket belongs to</param>
       public Basket(Game1 game)
       {
          this.game = game;
