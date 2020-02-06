@@ -120,7 +120,7 @@ namespace MonoGameWindowsStarter
                switch (mod)
                {
                   case "%":
-                     if ((double) beans[i].Value / (double) Int32.Parse(x2) == (double)result)
+                     if ((double) beans[i].Value / (double) Int32.Parse(x2) == (double) result)
                      {
                         userScore += beans[i].Value + Int32.Parse(x2) + result;
                         calculateGoal();
@@ -259,8 +259,30 @@ namespace MonoGameWindowsStarter
          switch (whichMod)
          {
             case 1:
+               result = val1 + val2;
+               if (random.Next(1, 100) % 2 == 0) x1 = val1.ToString();
+               else x2 = val2.ToString();
+               mod = "+";
+               break;
             case 2:
+               if (val1 > val2)
+               {
+                  result = val1 - val2;
+                  x1 = val1.ToString();
+               }
+               else
+               {
+                  result = val2 - val1;
+                  x2 = val1.ToString();
+               }
+               mod = "-";
+               break;
             case 3:
+               result = val1 * val2;
+               if (random.Next(1, 100) % 2 == 0) x1 = val1.ToString();
+               else x2 = val2.ToString();
+               mod = "*";
+               break;
             case 4:
                if (val1 > val2)
                {
