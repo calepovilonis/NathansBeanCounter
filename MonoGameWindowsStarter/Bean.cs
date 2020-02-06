@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Content;
 
 namespace MonoGameWindowsStarter
 {
-    class Ball 
+    class Bean 
     {
       GraphicsDeviceManager graphics;
       Texture2D texture;
@@ -22,7 +22,7 @@ namespace MonoGameWindowsStarter
       /// Creates a paddle
       /// </summary>
       /// <param name="game">The game this paddle belongs to</param>
-      public Ball(GraphicsDeviceManager graphics)
+      public Bean(GraphicsDeviceManager graphics)
       {
          this.graphics = graphics;
       }

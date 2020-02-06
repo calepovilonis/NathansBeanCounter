@@ -15,28 +15,28 @@ namespace MonoGameWindowsStarter
       GraphicsDeviceManager graphics;
       SpriteBatch spriteBatch;
       Random random = new Random();
-      List<Ball> balls = new List<Ball>();
+
       Texture2D background;
       Texture2D nathanbean;
       Texture2D speachbubble;
       Texture2D shadow;
+      
+      private SpriteFont font;
+      private SpriteFont score;
+
+      List<Bean> beans = new List<Bean>();
+      Basket basket;
+
+      int userScore = 0;
 
       float timer = (float).85;
       const float TIMER = (float).85;
 
-      Vector2 ballPosition = Vector2.Zero;
-      Vector2 ballVelocity;
-
-      private SpriteFont font;
-      private SpriteFont score;
       private string x1 = "?";
       private string x2 = "?";
       private string mod;
       private int result;
 
-      int userScore = 100;
-
-      Paddle paddle;
 
       KeyboardState oldKeyboardState;
       KeyboardState newKeyboardState;
@@ -45,7 +45,7 @@ namespace MonoGameWindowsStarter
       {
          graphics = new GraphicsDeviceManager(this);
          Content.RootDirectory = "Content";
-         paddle = new Paddle(this);
+         basket = new Basket(this);
          calculateGoal();
       }
 
@@ -114,12 +114,6 @@ namespace MonoGameWindowsStarter
          graphics.PreferredBackBufferHeight = 1042;
          graphics.ApplyChanges();
 
-         ballVelocity = new Vector2(
-             (float)random.NextDouble(),
-             (float)random.NextDouble()
-         );
-         ballVelocity.Normalize();
-
          base.Initialize();
       }
 
@@ -139,11 +133,11 @@ namespace MonoGameWindowsStarter
          shadow = Content.Load<Texture2D>("shadow");
          nathanbean = Content.Load<Texture2D>("nathanbean");
          // TODO: use this.Content to load your game content here
-         foreach (Ball ball in balls)
+         foreach (Bean ball in beans)
          {
             ball.LoadContent(Content);
          }
-         paddle.LoadContent(Content);
+         basket.LoadContent(Content);
       }
 
       /// <summary>
@@ -157,17 +151,17 @@ namespace MonoGameWindowsStarter
 
       public void deductScore (int i)
       {
-         if (balls[i].bounds.Y >= graphics.GraphicsDevice.Viewport.Height - 50) balls[i].Value = 0;
-         if (balls[i].Value == 1)
+         if (beans[i].bounds.Y >= graphics.GraphicsDevice.Viewport.Height - 50) beans[i].Value = 0;
+         if (beans[i].Value == 1)
          {
             userScore--;
             return;
          } 
-         if (userScore - (balls[i].Value / 2) < 0)
+         if (userScore - (beans[i].Value / 2) < 0)
          {
             userScore = 0;
          }
-         else userScore -= (balls[i].Value / 2);
+         else userScore -= (beans[i].Value / 2);
       }
       /// <summary>
       /// Allows the game to run logic such as updating the world,
@@ -184,18 +178,18 @@ namespace MonoGameWindowsStarter
          if (newKeyboardState.IsKeyDown(Keys.Escape))
             Exit();
 
-         paddle.Update(gameTime);
+         basket.Update(gameTime);
 
-         for (int i = 0; i < balls.Count; i++)
+         for (int i = 0; i < beans.Count; i++)
          {
-            if (paddle.hitbox.CollidesWith(balls[i].bounds))
+            if (basket.hitbox.CollidesWith(beans[i].bounds))
             {
                switch (mod)
                {
                   case "%":
-                     if (balls[i].Value / Int32.Parse(x2) == result)
+                     if (beans[i].Value / Int32.Parse(x2) == result)
                      {
-                        userScore += balls[i].Value + Int32.Parse(x2) + result;
+                        userScore += beans[i].Value + Int32.Parse(x2) + result;
                         calculateGoal();
                      }
                      else deductScore(i);
@@ -203,18 +197,18 @@ namespace MonoGameWindowsStarter
                   case "-":
                      if (x1.Equals("?"))
                      {
-                        if (balls[i].Value - Int32.Parse(x2) == result)
+                        if (beans[i].Value - Int32.Parse(x2) == result)
                         {
-                           userScore += balls[i].Value + Int32.Parse(x2) + result;
+                           userScore += beans[i].Value + Int32.Parse(x2) + result;
                            calculateGoal();
                         }
                         else deductScore(i);
                      }
                      else if (!x1.Equals("?"))
                      {
-                        if (Int32.Parse(x1) - balls[i].Value == result)
+                        if (Int32.Parse(x1) - beans[i].Value == result)
                         {
-                           userScore += balls[i].Value + Int32.Parse(x1) + result;
+                           userScore += beans[i].Value + Int32.Parse(x1) + result;
                            calculateGoal();
                         }
                         else deductScore(i);
@@ -224,18 +218,18 @@ namespace MonoGameWindowsStarter
                   case "*":
                      if (x1.Equals("?"))
                      {
-                        if (balls[i].Value * Int32.Parse(x2) == result)
+                        if (beans[i].Value * Int32.Parse(x2) == result)
                         {
-                           userScore += balls[i].Value + Int32.Parse(x2) + result;
+                           userScore += beans[i].Value + Int32.Parse(x2) + result;
                            calculateGoal();
                         }
                         else deductScore(i);
                      }
                      else if (!x1.Equals("?"))
                      {
-                        if (balls[i].Value * Int32.Parse(x1) == result)
+                        if (beans[i].Value * Int32.Parse(x1) == result)
                         {
-                           userScore += balls[i].Value + Int32.Parse(x1) + result;
+                           userScore += beans[i].Value + Int32.Parse(x1) + result;
                            calculateGoal();
                         }
                         else deductScore(i);
@@ -244,18 +238,18 @@ namespace MonoGameWindowsStarter
                   case "+":
                      if (x1.Equals("?"))
                      {
-                        if (balls[i].Value + Int32.Parse(x2) == result)
+                        if (beans[i].Value + Int32.Parse(x2) == result)
                         {
-                           userScore += balls[i].Value + Int32.Parse(x2) + result;
+                           userScore += beans[i].Value + Int32.Parse(x2) + result;
                            calculateGoal();
                         }
                         else deductScore(i);
                      }
                      else if (!x1.Equals("?"))
                      {
-                        if (balls[i].Value + Int32.Parse(x1) == result)
+                        if (beans[i].Value + Int32.Parse(x1) == result)
                         {
-                           userScore += balls[i].Value + Int32.Parse(x1) + result;
+                           userScore += beans[i].Value + Int32.Parse(x1) + result;
                            calculateGoal();
                         }
                         else deductScore(i);
@@ -342,27 +336,27 @@ namespace MonoGameWindowsStarter
                }
                */
 
-               balls.Remove(balls[i]);
+               beans.Remove(beans[i]);
             }
          }
 
 
-         for (int i = 0; i < balls.Count; i++)
+         for (int i = 0; i < beans.Count; i++)
          {
-            if (balls[i].BoundsY == graphics.GraphicsDevice.Viewport.Height) balls.Remove(balls[i]);
+            if (beans[i].BoundsY == graphics.GraphicsDevice.Viewport.Height) beans.Remove(beans[i]);
          }
 
          float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
          timer -= elapsed;
          if (timer < 0)
          {
-            Ball newBall = new Ball(graphics);
+            Bean newBall = new Bean(graphics);
             newBall.LoadContent(Content);
-            balls.Add(newBall);
+            beans.Add(newBall);
             timer = TIMER;
          }
 
-         foreach (Ball ball in balls)
+         foreach (Bean ball in beans)
          {
             ball.Update(gameTime);
          }
@@ -385,11 +379,11 @@ namespace MonoGameWindowsStarter
          spriteBatch.Draw(speachbubble, new Rectangle(graphics.GraphicsDevice.Viewport.Width - 274, graphics.GraphicsDevice.Viewport.Height / 2 - 250, 274, 233), Color.White);
          spriteBatch.Draw(shadow, new Rectangle(graphics.GraphicsDevice.Viewport.Width - 315, graphics.GraphicsDevice.Viewport.Height / 2 + 350, 274, 172), Color.White);
          spriteBatch.Draw(nathanbean, new Rectangle(graphics.GraphicsDevice.Viewport.Width - 274, graphics.GraphicsDevice.Viewport.Height / 2, 260, 315), Color.White);
-         foreach (Ball ball in balls)
+         foreach (Bean ball in beans)
          {
             ball.Draw(spriteBatch);
          }
-         paddle.Draw(spriteBatch);
+         basket.Draw(spriteBatch);
          string goal = x1 + " " + mod.ToString() + " " + x2 + " = " + result.ToString();
          spriteBatch.DrawString(font, goal, new Vector2(graphics.GraphicsDevice.Viewport.Width - 220, graphics.GraphicsDevice.Viewport.Height / 2 - 180), Color.Black);
          spriteBatch.DrawString(score, "Score: " + userScore, new Vector2(graphics.GraphicsDevice.Viewport.Width - 274, 50), Color.Black);

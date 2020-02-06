@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Content;
 
 namespace MonoGameWindowsStarter
 {
-   public class Paddle
+   public class Basket
    {
       Game1 game;
 
@@ -23,7 +23,7 @@ namespace MonoGameWindowsStarter
       /// Creates a paddle
       /// </summary>
       /// <param name="game">The game this paddle belongs to</param>
-      public Paddle(Game1 game)
+      public Basket(Game1 game)
       {
          this.game = game;
       }
@@ -44,20 +44,6 @@ namespace MonoGameWindowsStarter
       public void Update(GameTime gameTime)
       {
          var keyboardState = Keyboard.GetState();
-         /*
-         if (keyboardState.IsKeyDown(Keys.Up))
-         {
-             // move up
-             bounds.Y -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-         }
-
-
-         if (keyboardState.IsKeyDown(Keys.Down))
-         {
-             // move down
-             bounds.Y += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-         }
-         */
 
          if (keyboardState.IsKeyDown(Keys.Left))
          {
