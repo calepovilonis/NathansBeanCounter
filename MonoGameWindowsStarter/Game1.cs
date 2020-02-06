@@ -265,26 +265,6 @@ namespace MonoGameWindowsStarter
                mod = "+";
                break;
             case 2:
-               result = val1 * val2;
-               if (random.Next(1, 100) % 2 == 0) x1 = val1.ToString();
-               else x2 = val2.ToString();
-               mod = "*";
-               break;
-            
-            case 3:
-               if (val1 > val2)
-               {
-                  result = val1 / val2;
-                  x2 = val2.ToString();
-               }
-               else
-               {
-                  result = val2 / val1;
-                  x2 = val1.ToString();
-               }
-               mod = "%";
-               break;
-            case 4:
                if (val1 > val2)
                {
                   result = val1 - val2;
@@ -296,6 +276,25 @@ namespace MonoGameWindowsStarter
                   x2 = val1.ToString();
                }
                mod = "-";
+               break;
+            case 3:
+               result = val1 * val2;
+               if (random.Next(1, 100) % 2 == 0) x1 = val1.ToString();
+               else x2 = val2.ToString();
+               mod = "*";
+               break;
+            case 4:
+               if (val1 > val2)
+               {
+                  result = val1 / val2;
+                  x2 = val2.ToString();
+               }
+               else
+               {
+                  result = val2 / val1;
+                  x2 = val1.ToString();
+               }
+               mod = "%";
                break;
 
             default: break;
