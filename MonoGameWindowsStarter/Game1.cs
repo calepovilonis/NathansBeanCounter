@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -20,6 +21,11 @@ namespace MonoGameWindowsStarter
       Texture2D nathanbean;
       Texture2D speachbubble;
       Texture2D shadow;
+
+      // https://www.dl-sounds.com/royalty-free/8-bit-detective/
+      SoundEffectInstance music;
+      SoundEffect correctBean;
+      SoundEffect incorrectBean;
 
       private SpriteFont font;
       private SpriteFont score;
@@ -75,6 +81,14 @@ namespace MonoGameWindowsStarter
          font = Content.Load<SpriteFont>("Goal");
          score = Content.Load<SpriteFont>("Score");
 
+         music = Content.Load<SoundEffect>("music").CreateInstance();
+         music.IsLooped = true;
+         music.Volume = 0.04f;
+         music.Play();
+
+         correctBean = Content.Load<SoundEffect>("correct");
+         incorrectBean = Content.Load<SoundEffect>("incorrect");
+
          background = Content.Load<Texture2D>("background");
          speachbubble = Content.Load<Texture2D>("speachbubble");
          shadow = Content.Load<Texture2D>("shadow");
@@ -120,9 +134,10 @@ namespace MonoGameWindowsStarter
                switch (mod)
                {
                   case "%":
-                     if ((double) beans[i].Value / (double) Int32.Parse(x2) == (double) result)
+                     if ((double)beans[i].Value / (double)Int32.Parse(x2) == (double)result)
                      {
                         userScore += beans[i].Value + Int32.Parse(x2) + result;
+                        correctBean.Play();
                         calculateGoal();
                      }
                      else deductScore(i);
@@ -133,6 +148,7 @@ namespace MonoGameWindowsStarter
                         if (beans[i].Value - Int32.Parse(x2) == result)
                         {
                            userScore += beans[i].Value + Int32.Parse(x2) + result;
+                           correctBean.Play();
                            calculateGoal();
                         }
                         else deductScore(i);
@@ -142,6 +158,7 @@ namespace MonoGameWindowsStarter
                         if (Int32.Parse(x1) - beans[i].Value == result)
                         {
                            userScore += beans[i].Value + Int32.Parse(x1) + result;
+                           correctBean.Play();
                            calculateGoal();
                         }
                         else deductScore(i);
@@ -154,6 +171,7 @@ namespace MonoGameWindowsStarter
                         if (beans[i].Value * Int32.Parse(x2) == result)
                         {
                            userScore += beans[i].Value + Int32.Parse(x2) + result;
+                           correctBean.Play();
                            calculateGoal();
                         }
                         else deductScore(i);
@@ -163,6 +181,7 @@ namespace MonoGameWindowsStarter
                         if (beans[i].Value * Int32.Parse(x1) == result)
                         {
                            userScore += beans[i].Value + Int32.Parse(x1) + result;
+                           correctBean.Play();
                            calculateGoal();
                         }
                         else deductScore(i);
@@ -174,6 +193,7 @@ namespace MonoGameWindowsStarter
                         if (beans[i].Value + Int32.Parse(x2) == result)
                         {
                            userScore += beans[i].Value + Int32.Parse(x2) + result;
+                           correctBean.Play();
                            calculateGoal();
                         }
                         else deductScore(i);
@@ -183,6 +203,7 @@ namespace MonoGameWindowsStarter
                         if (beans[i].Value + Int32.Parse(x1) == result)
                         {
                            userScore += beans[i].Value + Int32.Parse(x1) + result;
+                           correctBean.Play();
                            calculateGoal();
                         }
                         else deductScore(i);
@@ -303,17 +324,24 @@ namespace MonoGameWindowsStarter
 
       public void deductScore(int i)
       {
-         if (beans[i].bounds.Y >= graphics.GraphicsDevice.Viewport.Height - 50) beans[i].Value = 0;
+         if (beans[i].bounds.Y >= graphics.GraphicsDevice.Viewport.Height - 50) return;
          if (beans[i].Value == 1 && !(userScore == 0))
          {
             userScore--;
+            incorrectBean.Play();
+
             return;
          }
-         if (userScore - (beans[i].Value / 2) < 0)
+         else if (userScore - (beans[i].Value / 2) < 0)
          {
+            incorrectBean.Play();
+
             userScore = 0;
          }
-         else userScore -= (beans[i].Value / 2);
+         else {
+            userScore -= (beans[i].Value / 2);
+            incorrectBean.Play();
+         };
       }
    }
 }
