@@ -25,7 +25,7 @@ namespace MonoGameWindowsStarter
       {
          this.game = graphics;
          this.timer = new TimeSpan(0);
-         //position = new Vector2(game.GraphicsDevice.Viewport.Width - 320, game.GraphicsDevice.Viewport.Height);
+         position = new Vector2(700, 540);
       }
 
       public void LoadContent()
@@ -36,7 +36,6 @@ namespace MonoGameWindowsStarter
          {
             rectangles[i] = new Rectangle((i) * FRAME_WIDTH, 0, FRAME_WIDTH, FRAME_HEIGHT);
          }
-         position = new Vector2(700,540);
       }
 
       public void Update(GameTime gameTime)
@@ -60,13 +59,6 @@ namespace MonoGameWindowsStarter
 
       public void Draw(SpriteBatch spriteBatch)
       {
-         var source = new Rectangle(
-                frame * FRAME_WIDTH, // X value 
-                FRAME_HEIGHT, // Y value
-                FRAME_WIDTH, // Width 
-                FRAME_HEIGHT // Height
-                );
-
          spriteBatch.Draw(texture, position, rectangles[frame], Color.White);
       }
    }
