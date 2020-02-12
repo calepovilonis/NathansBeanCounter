@@ -17,6 +17,8 @@ namespace MonoGameWindowsStarter
       SpriteBatch spriteBatch;
       Random random = new Random();
 
+      Nathanbean nathan;
+
       Texture2D background;
       Texture2D nathanbean;
       Texture2D speachbubble;
@@ -51,6 +53,7 @@ namespace MonoGameWindowsStarter
          graphics = new GraphicsDeviceManager(this);
          Content.RootDirectory = "Content";
          basket = new Basket(this);
+         nathan = new Nathanbean(this);
          calculateGoal();
       }
 
@@ -85,6 +88,8 @@ namespace MonoGameWindowsStarter
          music.IsLooped = true;
          music.Volume = 0.04f;
          music.Play();
+
+         nathan.LoadContent();
 
          correctBean = Content.Load<SoundEffect>("correct");
          incorrectBean = Content.Load<SoundEffect>("incorrect");
@@ -125,6 +130,7 @@ namespace MonoGameWindowsStarter
          if (newKeyboardState.IsKeyDown(Keys.Escape))
             Exit();
 
+         nathan.Update(gameTime);
          basket.Update(gameTime);
 
          for (int i = 0; i < beans.Count; i++)
@@ -254,8 +260,9 @@ namespace MonoGameWindowsStarter
          spriteBatch.Begin();
          spriteBatch.Draw(background, new Rectangle(-200, 0, graphics.GraphicsDevice.Viewport.Width + 350, graphics.GraphicsDevice.Viewport.Height), Color.White);
          spriteBatch.Draw(speachbubble, new Rectangle(graphics.GraphicsDevice.Viewport.Width - 274, graphics.GraphicsDevice.Viewport.Height / 2 - 250, 274, 233), Color.White);
-         spriteBatch.Draw(shadow, new Rectangle(graphics.GraphicsDevice.Viewport.Width - 315, graphics.GraphicsDevice.Viewport.Height / 2 + 350, 274, 172), Color.White);
-         spriteBatch.Draw(nathanbean, new Rectangle(graphics.GraphicsDevice.Viewport.Width - 274, graphics.GraphicsDevice.Viewport.Height / 2, 260, 315), Color.White);
+         //spriteBatch.Draw(shadow, new Rectangle(graphics.GraphicsDevice.Viewport.Width - 315, graphics.GraphicsDevice.Viewport.Height / 2 + 350, 274, 172), Color.White);
+         //spriteBatch.Draw(nathanbean, new Rectangle(graphics.GraphicsDevice.Viewport.Width - 274, graphics.GraphicsDevice.Viewport.Height / 2, 260, 315), Color.White);
+         nathan.Draw(spriteBatch);
          foreach (Bean ball in beans)
          {
             ball.Draw(spriteBatch);
